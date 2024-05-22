@@ -13,7 +13,7 @@ function Listpkmn(){
     useEffect( () => {
         async function fetchdata(){
 
-            const pkmn = await axios.get('http://localhost:3001/random');
+            const pkmn = await axios.get('https://projet-pokemon-seven.vercel.app/aleatoire');
             // console.log(pkmn)
 
             if (compteur > 6){
