@@ -45,9 +45,9 @@ function Listpkmn(){
     }
     
     function pickAttacks(pkmnAttackList){
-        pkmnAttackList = pkmnAttackList.slice(1, -1);
-        console.log(pkmnAttackList);
-        const elements = pkmnAttackList.split(',');
+        // pkmnAttackList = pkmnAttackList.slice(1, -1);
+        // console.log(pkmnAttackList);
+        // const elements = pkmnAttackList.split(',');
         pkmnAttackList = elements;
 
         if (pkmnAttackList.length >4) {
