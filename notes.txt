@@ -1,0 +1,62 @@
+ function showAllPokemon(){
+        if(listpkmn.length != 0){
+            return (
+                <>
+                    <div>{listpkmn.map( (pkmn, index) => (
+                        <div>
+                            {Object.entries(pkmn).map(([key, value]) => (
+                                <p key={key}>
+                                    {key}: {value}
+                                </p>
+                            ))}
+                        </div>
+                    ))}</div>
+                </>
+            )
+        }
+    }
+
+
+function showAllPokemon(){
+        if(listpkmn.length != 0){
+            return (
+                <>
+                    <div>
+                        {Object.entries(listpkmn[0]).map(([key, value]) => (
+                            <p key={key}>
+                                {key}: {value}
+                            </p>
+                        ))}
+                    </div>
+                </>
+            )
+        }
+    }
+
+
+    function choisirElementRandom(liste) {
+    // Générer un index aléatoire entre 0 et la longueur de la liste - 1
+    const indexAleatoire = Math.floor(Math.random() * liste.length);
+    // Retourner l'élément correspondant à cet index
+    return liste[indexAleatoire];
+}
+
+// Exemple d'utilisation avec une liste
+const maListe = ['élément 1', 'élément 2', 'élément 3', 'élément 4', 'élément 5'];
+const elementRandom = choisirElementRandom(maListe);
+console.log("Élément choisi au hasard :", elementRandom);
+
+
+
+Name: Swirlix
+Types: ['Fairy']
+Abilities: ['Sweet Veil', 'Unburden']
+Tier:
+HP: 62
+Attack: 48
+Defense: 66
+Special Attack: 59
+Special Defense: 57
+Speed: 49
+Next Evolution(s): ['Slurpuff']
+Moves: 'Light Screen' 'Surf' 'Flash' 'Attract'
