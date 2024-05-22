@@ -48,7 +48,7 @@ function Listpkmn(){
         // pkmnAttackList = pkmnAttackList.slice(1, -1);
         // console.log(pkmnAttackList);
         // const elements = pkmnAttackList.split(',');
-        pkmnAttackList = elements;
+        // pkmnAttackList = elements;
 
         if (pkmnAttackList.length >4) {
             let nouvellesAttaques = [];
