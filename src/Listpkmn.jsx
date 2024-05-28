@@ -69,7 +69,7 @@ function Listpkmn(){
     }
 
     function setMaxHP(pkmn){
-        console.log(pkmn)
+        // console.log("first poke", pkmn)
         if (typeof pkmn.MaxHP !== 'undefined' && pkmn.MaxHP !== null) {
             // maVariable est définie
         } else {
@@ -245,7 +245,7 @@ function Listpkmn(){
                     null
                 )}
 
-                {console.log("dead", testDead)}
+                {/* {console.log("dead", testDead)} */}
 
 
                 {/* {showFirstPokemoninfos()} */}
