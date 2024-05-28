@@ -13,29 +13,20 @@ function Listpkmn(){
     useEffect( () => {
         async function fetchdata(){
 
-            const pkmn = await axios.get('https://projet-pokemon-seven.vercel.app/aleatoire');
-            // console.log(pkmn)
-
-            if (compteur > 6){
-                setCompteur(6)
-            }
-
             if (listpkmn.length <6 && compteur != 0){
-                
+                const pkmn = await axios.get('https://projet-pokemon-seven.vercel.app/aleatoire');
+                // console.log(pkmn)
                 let listProvi = [...listpkmn]
-
                 listProvi.push(pkmn.data)                 
-
                 setListpkmn(listProvi)
-
-                
             }
-
-            
         }
         fetchdata()
-        
-
+        if (compteur > listpkmn.length && listpkmn.length +1 <= 6){
+            setCompteur(listpkmn.length +1)
+        }else if (compteur >6){
+            setCompteur(6)
+        }
     }, [compteur]);
 
 
