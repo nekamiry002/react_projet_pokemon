@@ -9,7 +9,7 @@ function Loading(){
     let UnLoadbar = <div style={{'width': unloaded + "%", 'background-color': "black",'height': "20px"}}></div>
 
     useEffect(() => {
-        console.log(loaded)
+        // console.log(loaded)
         if (loaded >= 100){
             setLoaded(0)
         }

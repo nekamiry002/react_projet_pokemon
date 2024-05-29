@@ -13,60 +13,75 @@ function Listpkmn(){
     useEffect( () => {
         async function fetchdata(){
 
+            let nouvellesAttaques = [];
+            let nouvelleAttaque = '';
+            let check = 0;
+
             if (listpkmn.length <6 && compteur != 0){
                 const pkmn = await axios.get('https://projet-pokemon-seven.vercel.app/aleatoire');
-                // console.log(pkmn)
+                
+                while (nouvellesAttaques.length < 4) {
+                    nouvelleAttaque = choisirElementRandom(pkmn.data.Moves)
+                    if (nouvellesAttaques.length >= 1) {
+                        check = 0
+                        nouvellesAttaques.map( (newmove, index) => {
+                            if (nouvelleAttaque == newmove) {
+                                check = 1; // Set check to 1 if they are equal
+                            }
+                        })
+                    }else{
+                        // console.log("premier passage")
+                        check = 1
+                        nouvellesAttaques.push(nouvelleAttaque)
+                    }
+
+                    if (check == 0) {
+                        nouvellesAttaques.push(nouvelleAttaque)
+                    }
+                }
+
+                pkmn.data.Moves = nouvellesAttaques
+
+                await Promise.all(pkmn.data.Moves.map( async (oneAttaque, index) => {
+                    return await axios.get('https://projet-pokemon-seven.vercel.app/attackById/' + oneAttaque)
+                })).then(res => {
+                    // console.log({res})
+                    res.forEach((oneAttaque, index) => {
+                        let nouvelleAttaque =  oneAttaque["data"]["Name"]
+                        pkmn.data.Moves[index] =  nouvelleAttaque
+                    })
+                })
+
+                await Promise.all(pkmn.data.Types.map( async (oneType, index) => {
+                    return await axios.get('https://projet-pokemon-seven.vercel.app/typeById/' + oneType)
+                })).then(res => {
+                    // console.log({res})
+                    res.forEach((oneType, index) => {
+                        let nouveauType =  oneType["data"]["name"]
+                        pkmn.data.Types[index] =  nouveauType
+                    })
+                })
+
+                console.log("nouveau pokemon:", pkmn.data)
+
                 let listProvi = [...listpkmn]
-                listProvi.push(pkmn.data)                 
+                listProvi.push(pkmn.data)
                 setListpkmn(listProvi)
+                // console.log(listpkmn)
             }
         }
         fetchdata()
-        if (compteur > listpkmn.length && listpkmn.length +1 <= 6){
-            setCompteur(listpkmn.length +1)
-        }else if (compteur >6){
-            setCompteur(6)
-        }
     }, [compteur]);
 
+    // useEffect( () => {
+    //     console.log("la liste des poke a changé")
+    // }, [listpkmn])
 
     function choisirElementRandom(liste) {
         const indexAleatoire = Math.floor(Math.random() * liste.length);
         return liste[indexAleatoire];
     }
     
-    function pickAttacks(pkmnAttackList){
-        // pkmnAttackList = pkmnAttackList.slice(1, -1);
-        // console.log(pkmnAttackList);
-        // const elements = pkmnAttackList.split(',');
-        // pkmnAttackList = elements;
-
-        if (pkmnAttackList.length >4) {
-            let nouvellesAttaques = [];
-            let nouvelleAttaque = '';
-            let check = 0;
-            for (let i = 0; i < 4; i++) {
-                nouvelleAttaque = choisirElementRandom(pkmnAttackList)
-                if (nouvellesAttaques.length > 1) {
-                    check = 0
-                    nouvellesAttaques.map( (newmove, index) => (
-                        nouvelleAttaque == newmove ? (
-                            check = 1
-                        ) : (
-                            null
-                        )
-                    ))
-                }
-
-                if (check == 0) {
-                    nouvellesAttaques.push(nouvelleAttaque)
-                }else{
-                    i = i-1
-                }
-            }
-            return nouvellesAttaques;
-        }
-    }
 
     function setMaxHP(pkmn){
         // console.log("first poke", pkmn)
@@ -85,7 +100,7 @@ function Listpkmn(){
         setCurrentHP(currentHP - 20);
     }
 
-     function Switch(listpkmn, indexPkmn) {
+    function Switch(listpkmn, indexPkmn) {
         if (listpkmn[indexPkmn].HP >0) {
             let listTemp = [...listpkmn]
 
@@ -103,57 +118,62 @@ function Listpkmn(){
         // setCurrentHP(listpkmn[0].HP)
     }
 
-    function showFirstPokemon(){
+    function showFirstPokemon(firstPkmn){
         // console.log("showfp:")
-        if(listpkmn.length != 0){
-            return (
-                <>
-                    {currentHP == 0 && listpkmn.length == 1? (
-                        setCurrentHP(listpkmn[0].HP)
-                    ) : (
-                        null
-                    )}
-                    {/* {console.log("current", currentHP)} */}
-                    {/* {console.log("inlist 1", listpkmn[0].HP)} */}
-                    {listpkmn.length === 1 ? null : ( 
-                        (() => {
-                            // console.log("test 1", listpkmn[0].HP);
-                            listpkmn[0].HP = currentHP;
-                        })()
-                    )}
-                    {/* {console.log("inlist 2", listpkmn[0].HP)} */}
-                    {currentHP != 0 ? (
-                        <>
-                            {/* {console.log("test 2", listpkmn[0].HP)} */}
-                            <div>{listpkmn[0].HP = currentHP}/{listpkmn[0].MaxHP}</div>
-                        </>
-                    ) : (
-                        <>
-                            {/* {console.log("test 3", listpkmn[0].HP)} */}
-                            <div>{listpkmn[0].HP}/{listpkmn[0].MaxHP}</div>
-                        </>
-                    )}
-                    
-                    {/* {console.log("inlist 3", listpkmn[0].HP)} */}
-
-                    <ul>
-                        <li>{listpkmn[0][" Name"]}</li>
-                        <li>{listpkmn[0].Types}</li>
-                        {/* <li>{listpkmn[0].Moves.length}</li> */}
-                        <li>
-                            {listpkmn[0].Moves.map( (move, index) => (
-                                <div key={move}>
-                                    <button onClick={() => {attaque()
-                                    attaqueEnnemie()
-                                    }}>{move}</button>
-                                </div>
-                            ))}
-                        </li>
-                    </ul>
-                </>
+        // console.log({listpkmn})
+        return (
+            <>
+                {currentHP == 0 && listpkmn.length == 1? (
+                    setCurrentHP(firstPkmn.HP)
+                ) : (
+                    null
+                )}
+                {/* {console.log("current", currentHP)} */}
+                {/* {console.log("inlist 1", firstPkmn.HP)} */}
+                {listpkmn.length === 1 ? null : ( 
+                    (() => {
+                        // console.log("test 1", firstPkmn.HP);
+                        firstPkmn.HP = currentHP;
+                    })()
+                )}
+                {/* {console.log("inlist 2", firstPkmn.HP)} */}
+                {currentHP != 0 ? (
+                    <>
+                        {/* {console.log("test 2", firstPkmn.HP)} */}
+                        <div>{firstPkmn.HP = currentHP}/{firstPkmn.MaxHP}</div>
+                    </>
+                ) : (
+                    <>
+                        {/* {console.log("test 3", firstPkmn.HP)} */}
+                        <div>{firstPkmn.HP}/{firstPkmn.MaxHP}</div>
+                    </>
+                )}
                 
-            )
-        }
+                {/* {console.log("inlist 3", firstPkmn.HP)} */}
+
+                <ul>
+                    <li>{firstPkmn[" Name"]}</li>
+                    <li>
+                        {firstPkmn.Types.map( (Type, index) => (
+                            <div key={Type}>
+                                {Type}
+                            </div>
+                        ))}
+                    </li>
+                    {/* <li>{firstPkmn.Moves.length}</li> */}
+                    <li>
+                        {/* {console.log(firstPkmn.Moves)} */}
+                        {firstPkmn.Moves.map( (move, index) => (
+                            <div key={move}>
+                                <button onClick={() => {attaque()
+                                attaqueEnnemie()
+                                }}>{move}</button>
+                            </div>
+                        ))}
+                    </li>
+                </ul>
+            </>
+        )
     }
 
     function showFirstPokemoninfos(){
@@ -172,7 +192,6 @@ function Listpkmn(){
         }
     }
 
-    
 
     let testDead = 0;
     
@@ -185,15 +204,15 @@ function Listpkmn(){
                     <div>{currentHPennemy}</div>
                 )}
 
-                <button onClick={() =>{setCompteur(compteur + 1)}}>+</button>
+                <button onClick={() =>{
+                    if(compteur < 6 && compteur == listpkmn.length){
+                        setCompteur(compteur + 1)
+                    }else if(compteur < 6 && compteur < listpkmn.length){
+                        setCompteur(listpkmn.length + 1)
+                    }
+                }}>+</button>
 
                 {compteur}
-
-                {listpkmn.length > 0 && listpkmn[0].Moves.length > 4 ? (
-                    listpkmn[0].Moves = pickAttacks(listpkmn[0].Moves)
-                ) : (
-                    null
-                )}
 
                 {listpkmn.length > 0 ? (
                     setMaxHP(listpkmn[0])
@@ -203,7 +222,7 @@ function Listpkmn(){
 
                 {listpkmn.length > 0 ? (
                     listpkmn[0].HP > 0 ? (
-                        showFirstPokemon()
+                        showFirstPokemon(listpkmn[0])
                     ):(
                         <>
                             <div>{listpkmn[0][" Name"]} est K.O </div>
@@ -256,3 +275,52 @@ function Listpkmn(){
 }
 
 export default Listpkmn;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function pickAttacks(pkmnAttackList){
+//     if (pkmnAttackList.length >4) {
+//         let nouvellesAttaques = [];
+//         let nouvelleAttaque = '';
+//         let check = 0;
+//         for (let i = 0; i < 4; i++) {
+//             nouvelleAttaque = choisirElementRandom(pkmnAttackList)
+//             if (nouvellesAttaques.length > 1) {
+//                 check = 0
+//                 nouvellesAttaques.map( (newmove, index) => (
+//                     nouvelleAttaque == newmove ? (
+//                         check = 1
+//                     ) : (
+//                         null
+//                     )
+//                 ))
+//             }
+//             // console.log("attaque", nouvelleAttaque)
+//             // console.log("attaque avant", nouvelleAttaque)
+//             // let Attaque = await axios.get('https://projet-pokemon-seven.vercel.app/attackById/' + nouvelleAttaque)
+//             // console.log("attaque apres", Attaque["data"]["Name"])
+//             // console.log({Attaque})
+//             // nouvelleAttaque = await Attaque["data"]["Name"]
+//             // console.log("newattack", nouvelleAttaque)
+//             if (check == 0) {
+//                 nouvellesAttaques.push(nouvelleAttaque)
+//             }else{
+//                 i = i-1
+//             }
+//         }
+//         // console.log("nouvelles attaques", nouvellesAttaques)
+//         return nouvellesAttaques;
+//     }
+// }
