@@ -1,0 +1,9 @@
+Cette partie est le front-end.
+
+Le "100" sont les pv de l'ennemi
+
+Le bouton plus permet d'ajouter un pokemon aleatoire à votre équipe
+jusque un maximum de 6
+
+selectionnez une attaque pour attaquer 
+ou changer de pokemon en cliquant sur celui désiré
